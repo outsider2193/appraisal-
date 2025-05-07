@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Typography,
   TextField,
-  Button,
   MenuItem,
+  Button,
+  Typography,
+  Paper,
   Alert,
   CircularProgress,
-  Grid,
-  Paper,
 } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "../../api/Axios";
 import dayjs from "dayjs";
 
@@ -28,51 +28,44 @@ const CreateAppraisal = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Fetch employees and managers
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchData = async () => {
       try {
         const [empRes, mgrRes] = await Promise.all([
           axios.get("/hr/fetchemployees"),
           axios.get("/hr/fetchmanagers"),
         ]);
-        setEmployees(empRes.data.employees || []);
-        setManagers(mgrRes.data.managers || []);
+        setEmployees(empRes.data.employees);
+        setManagers(mgrRes.data.managers);
       } catch (err) {
-        setErrorMsg("Failed to load users");
+        console.error("Error fetching data:", err);
+        setErrorMsg("Failed to fetch employees or managers.");
       }
     };
-    fetchUsers();
+    fetchData();
   }, []);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleDateChange = (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSuccessMsg("");
-    setErrorMsg("");
     setLoading(true);
-
+    setErrorMsg("");
+    setSuccessMsg("");
     try {
-      const { employeeId, managerId, appraisalCycle, startDate, dueDate } = formData;
-
-      if (!employeeId || !managerId || !startDate || !dueDate) {
-        setErrorMsg("Please fill all required fields");
-        setLoading(false);
-        return;
-      }
-
-      const res = await axios.post("/hr/createappraisal", {
-        employeeId,
-        managerId,
-        appraisalCycle,
-        startDate,
-        dueDate,
-      });
-
-      setSuccessMsg(res.data.message);
+      const payload = {
+        ...formData,
+        startDate: formData.startDate?.toISOString(),
+        dueDate: formData.dueDate?.toISOString(),
+      };
+      const res = await axios.post("/hr/createappraisal", payload);
+      setSuccessMsg("Appraisal created successfully.");
       setFormData({
         employeeId: "",
         managerId: "",
@@ -81,119 +74,104 @@ const CreateAppraisal = () => {
         dueDate: null,
       });
     } catch (err) {
-      setErrorMsg(err.response?.data?.message || "Failed to create appraisal");
+      console.error("Error creating appraisal:", err);
+      setErrorMsg(err.response?.data?.message || "Failed to create appraisal.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Box sx={{ maxWidth: "800px", mx: "auto", mt: 4 }}>
-      <Paper elevation={4} sx={{ p: 4, borderRadius: 3 }}>
-        <Typography variant="h5" fontWeight={600} mb={3} color="primary">
-          Create New Appraisal
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Box p={3} maxWidth="700px" mx="auto">
+        <Typography variant="h4" fontWeight={600} color="primary" gutterBottom>
+          Create Appraisal
         </Typography>
 
-        {successMsg && <Alert severity="success" sx={{ mb: 2 }}>{successMsg}</Alert>}
-        {errorMsg && <Alert severity="error" sx={{ mb: 2 }}>{errorMsg}</Alert>}
+        <Paper elevation={3} sx={{ p: 3, mt: 2 }}>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              select
+              fullWidth
+              required
+              label="Select Employee"
+              name="employeeId"
+              value={formData.employeeId}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+            >
+              {employees.map((emp) => (
+                <MenuItem key={emp._id} value={emp._id}>
+                  {emp.firstName} {emp.lastName} ({emp.email})
+                </MenuItem>
+              ))}
+            </TextField>
 
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                select
-                name="employeeId"
-                label="Select Employee"
-                fullWidth
-                value={formData.employeeId}
-                onChange={handleChange}
-                required
-              >
-                {employees.map((emp) => (
-                  <MenuItem key={emp._id} value={emp._id}>
-                    {emp.firstName} {emp.lastName} ({emp.email})
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
+            <TextField
+              select
+              fullWidth
+              required
+              label="Select Manager"
+              name="managerId"
+              value={formData.managerId}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+            >
+              {managers.map((mgr) => (
+                <MenuItem key={mgr._id} value={mgr._id}>
+                  {mgr.firstName} {mgr.lastName} ({mgr.email})
+                </MenuItem>
+              ))}
+            </TextField>
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                select
-                name="managerId"
-                label="Select Manager"
-                fullWidth
-                value={formData.managerId}
-                onChange={handleChange}
-                required
-              >
-                {managers.map((mgr) => (
-                  <MenuItem key={mgr._id} value={mgr._id}>
-                    {mgr.firstName} {mgr.lastName} ({mgr.email})
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
+            <TextField
+              select
+              fullWidth
+              label="Appraisal Cycle"
+              name="appraisalCycle"
+              value={formData.appraisalCycle}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+            >
+              <MenuItem value="annual">Annual</MenuItem>
+              <MenuItem value="probation">Probation</MenuItem>
+              <MenuItem value="special">Special</MenuItem>
+            </TextField>
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                select
-                name="appraisalCycle"
-                label="Appraisal Cycle"
-                fullWidth
-                value={formData.appraisalCycle}
-                onChange={handleChange}
-              >
-                <MenuItem value="annual">Annual</MenuItem>
-                <MenuItem value="probation">Probation</MenuItem>
-                <MenuItem value="special">Special</MenuItem>
-              </TextField>
-            </Grid>
+            <DatePicker
+              label="Start Date"
+              value={formData.startDate}
+              onChange={(date) => handleDateChange("startDate", date)}
+              renderInput={(params) => (
+                <TextField fullWidth required {...params} sx={{ mb: 2 }} />
+              )}
+            />
 
-            <Grid item xs={12} sm={6}>
-              <DatePicker
-                label="Start Date"
-                value={formData.startDate}
-                onChange={(date) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    startDate: date ? dayjs(date).toISOString() : null,
-                  }))
-                }
-                renderInput={(params) => <TextField fullWidth required {...params} />}
-              />
-            </Grid>
+            <DatePicker
+              label="Due Date"
+              value={formData.dueDate}
+              onChange={(date) => handleDateChange("dueDate", date)}
+              renderInput={(params) => (
+                <TextField fullWidth required {...params} sx={{ mb: 3 }} />
+              )}
+            />
 
-            <Grid item xs={12} sm={6}>
-              <DatePicker
-                label="Due Date"
-                value={formData.dueDate}
-                onChange={(date) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    dueDate: date ? dayjs(date).toISOString() : null,
-                  }))
-                }
-                renderInput={(params) => <TextField fullWidth required {...params} />}
-              />
-            </Grid>
+            {errorMsg && <Alert severity="error" sx={{ mb: 2 }}>{errorMsg}</Alert>}
+            {successMsg && <Alert severity="success" sx={{ mb: 2 }}>{successMsg}</Alert>}
 
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={loading}
-              >
-                {loading ? <CircularProgress size={24} /> : "Create Appraisal"}
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-      </Paper>
-    </Box>
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              disabled={loading}
+            >
+              {loading ? <CircularProgress size={24} /> : "Create Appraisal"}
+            </Button>
+          </form>
+        </Paper>
+      </Box>
+    </LocalizationProvider>
   );
 };
 
 export default CreateAppraisal;
-

@@ -397,7 +397,7 @@ const submitFinalHRReview = async (req, res) => {
 const getAllEmployees = async (req, res) => {
     try {
         const employees = await User.find({ role: "employee" })
-            .select("firstname lastname email department");
+            .select("firstName lastName email department");
 
         if (!employees.length) {
             return res.status(404).json({ message: "No employees found" });
@@ -413,7 +413,7 @@ const getAllEmployees = async (req, res) => {
 
 const getAllManagers = async (req, res) => {
     try {
-        const managers = await User.find({ role: "manager" }).select("firstname lastname email department");
+        const managers = await User.find({ role: "manager" }).select("firstName lastName email department");
         if (!managers.length) {
             return res.status(404).json({ message: "No managers found" });
         }
@@ -431,8 +431,8 @@ const getAllAppraisals = async (req, res) => {
         const hrId = req.user.id;
 
         const appraisals = await Appraisal.find({ hr: hrId })
-            .populate("employee", "firstname lastname email")
-            .populate("manager", "firstname lastname email");
+            .populate("employee", "firstName lastName email")
+            .populate("manager", "firstName lastName email");
 
         res.status(200).json({ appraisals });
     } catch (err) {
@@ -508,9 +508,9 @@ const filterAppraisals = async (req, res) => {
         if (managerId) query.manager = managerId;
 
         const appraisals = await Appraisal.find(query)
-            .populate('employee', 'firstname lastname email')
-            .populate('manager', 'firstname lastname email')
-            .populate('hr', 'firstname lastname email')
+            .populate('employee', 'firstName lastName email')
+            .populate('manager', 'firstName lastName email')
+            .populate('hr', 'firstName lastName email')
             .populate('selfReview')
             .populate('managerReview')
             .populate('hrReview');

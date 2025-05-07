@@ -312,7 +312,7 @@ const ReviewForm = () => {
                             <Box mt={2}>
                                 <Typography variant="subtitle1" fontWeight="bold">Future Goals:</Typography>
                                 <Typography variant="body1">
-                                    {selectedAppraisal.selfReview.futureGoals || "No future goals provided."}
+                                    {selectedAppraisal.selfReview.futurePlans || "No future goals provided."}
                                 </Typography>
                             </Box>
 

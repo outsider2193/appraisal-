@@ -84,7 +84,7 @@ const getManagerAppraisals = async (req, res) => {
             .populate("employee", "firstname lastname email")
             .populate("selfReview")
             .populate("managerReview")
-            .populate("hrReview");
+          
 
         res.status(200).json({ appraisals });
     } catch (err) {
@@ -136,6 +136,28 @@ const getEmployeeGoals = async (req, res) => {
     }
 };
 
+
+
+const deleteGoal = async (req, res) => {
+    try {
+        const { goalId } = req.params;
+
+        const deletedGoal = await Goal.findByIdAndDelete(goalId);
+
+        if (!deletedGoal) {
+            return res.status(404).json({ message: "Goal not found" });
+        }
+
+        res.status(200).json({ message: "Goal deleted successfully" });
+    } catch (err) {
+        console.error("Error deleting goal:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+module.exports = { deleteGoal };
+
+
 const getEmployeeTrainings = async (req, res) => {
     try {
         const { employeeId } = req.params;
@@ -176,6 +198,23 @@ const assignTraining = async (req, res) => {
         res.status(201).json({ message: "Training assigned successfully", training: savedTraining });
     } catch (err) {
         console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+const deleteTraining = async (req, res) => {
+    try {
+        const { trainingId } = req.params;
+
+        const deletedTraining = await Training.findByIdAndDelete(trainingId);
+
+        if (!deletedTraining) {
+            return res.status(404).json({ message: "Training not  found" });
+        }
+
+        res.status(200).json({ message: "Training deleted successfully" });
+    } catch (err) {
+        console.error("Error deleting Training:", err);
         res.status(500).json({ message: "Server error" });
     }
 };
@@ -239,6 +278,6 @@ const giveRecognition = async (req, res) => {
 
 module.exports = {
     submitManagerReview, getManagerAppraisals, assignGoal, getEmployeeGoals, assignTraining, giveRecognition,
-    getManagerReviewForm, getEmployeeTrainings
+    getManagerReviewForm, getEmployeeTrainings, deleteGoal, deleteTraining
 
 };

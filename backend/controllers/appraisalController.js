@@ -277,12 +277,12 @@ const createAppraisal = async (req, res) => {
         const { employeeId, managerId, appraisalCycle, startDate, dueDate } = req.body;
         const hrId = req.user.id;
 
-     
+
         if (!employeeId || !managerId || !startDate || !dueDate) {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
-    
+
         const [employeeExists, managerExists] = await Promise.all([
             User.findById(employeeId),
             User.findById(managerId)
@@ -292,7 +292,7 @@ const createAppraisal = async (req, res) => {
             return res.status(404).json({ message: "Employee or Manager not found" });
         }
 
- 
+
         const existingAppraisal = await Appraisal.findOne({
             employee: employeeId,
             appraisalCycle,
@@ -304,7 +304,7 @@ const createAppraisal = async (req, res) => {
             return res.status(409).json({ message: "Appraisal already exists for this cycle and time period." });
         }
 
-       
+
         const appraisal = new Appraisal({
             employee: employeeId,
             manager: managerId,
@@ -317,7 +317,7 @@ const createAppraisal = async (req, res) => {
 
         const savedAppraisal = await appraisal.save();
 
-       
+
         await Promise.all([
             User.findByIdAndUpdate(employeeId, { $addToSet: { appraisals: savedAppraisal._id } }),
             User.findByIdAndUpdate(managerId, { $addToSet: { appraisals: savedAppraisal._id } })
@@ -364,7 +364,7 @@ const submitFinalHRReview = async (req, res) => {
             return res.status(404).json({ message: "Appraisal not found" });
         }
 
-       
+
         if (appraisal.hrReview) {
             return res.status(400).json({ message: "HR review already submitted for this appraisal." });
         }
@@ -383,7 +383,7 @@ const submitFinalHRReview = async (req, res) => {
         const savedReview = await hrReview.save();
 
         appraisal.hrReview = savedReview._id;
-        appraisal.status = "completed"; 
+        appraisal.status = "completed";
         await appraisal.save();
 
         res.status(201).json({ message: "HR final review submitted", hrReview: savedReview });
@@ -396,16 +396,34 @@ const submitFinalHRReview = async (req, res) => {
 
 const getAllEmployees = async (req, res) => {
     try {
-        const employees = await User.find({ role: "employee" }).select("-password");
+        const employees = await User.find({ role: "employee" })
+            .select("firstname lastname email department");
+
         if (!employees.length) {
             return res.status(404).json({ message: "No employees found" });
         }
+
         res.status(200).json({ employees });
     } catch (err) {
-        console.error(err);
+        console.error("Error fetching employees:", err);
         res.status(500).json({ message: "Error fetching employees" });
     }
 };
+
+
+const getAllManagers = async (req, res) => {
+    try {
+        const managers = await User.find({ role: "manager" }).select("firstname lastname email department");
+        if (!managers.length) {
+            return res.status(404).json({ message: "No managers found" });
+        }
+        res.status(200).json({ managers });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error fetching managers" });
+    }
+};
+
 
 
 const getAllAppraisals = async (req, res) => {
@@ -434,7 +452,7 @@ const updateAppraisalByHR = async (req, res) => {
             return res.status(404).json({ message: "Appraisal not found" });
         }
 
-      
+
         if (["self_review_completed", "manager_review_completed", "hr_review_completed", "completed"].includes(appraisal.status)) {
             return res.status(400).json({ message: "Cannot update appraisal after the review process has started" });
         }
@@ -446,7 +464,7 @@ const updateAppraisalByHR = async (req, res) => {
             return res.status(404).json({ message: "Manager not found" });
         }
 
-    
+
         const validCycles = ["annual", "probation", "special"];
         if (appraisalCycle && !validCycles.includes(appraisalCycle)) {
             return res.status(400).json({ message: "Invalid appraisal cycle" });
@@ -456,7 +474,7 @@ const updateAppraisalByHR = async (req, res) => {
             return res.status(400).json({ message: "Due date cannot be before start date" });
         }
 
-     
+
         appraisal.employee = employee ?? appraisal.employee;
         appraisal.manager = manager ?? appraisal.manager;
         appraisal.appraisalCycle = appraisalCycle ?? appraisal.appraisalCycle;
@@ -476,7 +494,7 @@ const filterAppraisals = async (req, res) => {
     try {
         const { status, employeeId, managerId } = req.query;
 
-        const query = { hr: req.user.id }; 
+        const query = { hr: req.user.id };
 
         if (status) {
             const validStatuses = ["pending", "self_review_completed", "manager_review_completed", "hr_review_completed", "completed"];
@@ -512,6 +530,7 @@ module.exports = {
     createAppraisal,
     submitFinalHRReview,
     getAllEmployees,
+    getAllManagers,
     getAllAppraisals,
     updateAppraisalByHR,
     filterAppraisals,

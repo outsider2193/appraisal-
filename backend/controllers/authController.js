@@ -4,22 +4,22 @@ const jwt = require('jsonwebtoken');
 
 const secretKey = process.env.JWT_SECRET;
 
-// Register user
+
 const registerUser = async (req, res) => {
     try {
         const { firstName, lastName, email, password, gender, contactNumber, department, designation, role } = req.body;
 
-        // Check if user already exists
+        
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({ success: false, message: 'User already exists' });
         }
 
-        // Hash password
+     
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create user
+    
         const user = await User.create({
             firstName,
             lastName,

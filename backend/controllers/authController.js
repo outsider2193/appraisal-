@@ -64,7 +64,14 @@ const loginUser = async (req, res) => {
 
         }
         const token = jwt.sign(
-            { id: existingUser._id, email: existingUser.email, role: existingUser.role },
+            { id: existingUser._id, 
+              email: existingUser.email, 
+              role: existingUser.role,
+              firstName: existingUser.firstName,
+              lastName: existingUser.lastName,
+              gender: existingUser.gender,
+              contactNumber: existingUser.contactNumber
+            },
             secretKey,
             { expiresIn: '10d' }
         );

@@ -1,106 +1,56 @@
-import React, { useState } from 'react';
+import React from "react";
 import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  Box,
-  Typography,
-  Toolbar,
-  CssBaseline,
-} from '@mui/material';
+    Drawer,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+} from "@mui/material";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import AddBoxIcon from "@mui/icons-material/AddBox";
+import PeopleIcon from "@mui/icons-material/People";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import RateReviewIcon from "@mui/icons-material/RateReview";
 
-import Overview from './Overview';
-import CreateAppraisal from './CreateAppraisal';
-import Employees from './Employees';
-import Managers from './Managers';
-import AllAppraisals from './AllAppraisals';
-import HRReviewForm from './HRReviewForm';
+const HrSidebar = ({ setActiveView }) => {
+    const drawerWidth = 240;
 
-const drawerWidth = 240;
+    const menuItems = [
+        { key: "overview", label: "Overview", icon: <DashboardIcon /> },
+        { key: "create", label: "Create Appraisal", icon: <AddBoxIcon /> },
+        { key: "employees", label: "Employees", icon: <PeopleIcon /> },
+        { key: "managers", label: "Managers", icon: <SupervisorAccountIcon /> },
+        { key: "all", label: "All Appraisals", icon: <FolderOpenIcon /> },
+        { key: "review", label: "HR Review Form", icon: <RateReviewIcon /> },
+    ];
 
-const HrSidebar = () => {
-  const [selectedComponent, setSelectedComponent] = useState('overview');
+    return (
+        <Drawer
+            variant="permanent"
+            anchor="left"
+            sx={{
+                width: 240,
+                flexShrink: 0,
+                '& .MuiDrawer-paper': {
+                    width: 240,
+                    boxSizing: 'border-box',
+                    bgcolor: '#003366',
+                    color: '#fff',
+                },
+            }}
+        >
 
-  const renderComponent = () => {
-    switch (selectedComponent) {
-      case 'overview':
-        return <Overview />;
-      case 'create':
-        return <CreateAppraisal />;
-      case 'employees':
-        return <Employees />;
-      case 'managers':
-        return <Managers />;
-      case 'all':
-        return <AllAppraisals />;
-      case 'review':
-        return <HRReviewForm />;
-      default:
-        return <Overview />;
-    }
-  };
-
-  return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-
-      {/* Fixed Permanent Sidebar */}
-      <Drawer
-        variant="permanent"
-        anchor="left"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-            backgroundColor: '#f0f0f0',
-          },
-        }}
-      >
-        <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
-          <Typography variant="h6" align="center" mt={2} fontWeight="bold">
-            HR Dashboard
-          </Typography>
-          <List>
-            <ListItem button onClick={() => setSelectedComponent('overview')}>
-              <ListItemText primary="Overview" />
-            </ListItem>
-            <ListItem button onClick={() => setSelectedComponent('create')}>
-              <ListItemText primary="Create Appraisal" />
-            </ListItem>
-            <ListItem button onClick={() => setSelectedComponent('employees')}>
-              <ListItemText primary="Employees" />
-            </ListItem>
-            <ListItem button onClick={() => setSelectedComponent('managers')}>
-              <ListItemText primary="Managers" />
-            </ListItem>
-            <ListItem button onClick={() => setSelectedComponent('all')}>
-              <ListItemText primary="All Appraisals" />
-            </ListItem>
-            <ListItem button onClick={() => setSelectedComponent('review')}>
-              <ListItemText primary="HR Review Form" />
-            </ListItem>
-          </List>
-        </Box>
-      </Drawer>
-
-      {/* Main Content Area */}
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          ml: `${drawerWidth}px`, // offset for fixed sidebar
-        }}
-      >
-        <Toolbar />
-        {renderComponent()}
-      </Box>
-    </Box>
-  );
+            <List>
+                {menuItems.map((item) => (
+                    <ListItem button key={item.key} onClick={() => setActiveView(item.key)}>
+                        <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
+                        <ListItemText primary={item.label} />
+                    </ListItem>
+                ))}
+            </List>
+        </Drawer>
+    );
 };
 
 export default HrSidebar;

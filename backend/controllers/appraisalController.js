@@ -397,7 +397,7 @@ const submitFinalHRReview = async (req, res) => {
 const getAllEmployees = async (req, res) => {
     try {
         const employees = await User.find({ role: "employee" })
-            .select("firstName lastName email department");
+            .select("firstName lastName email department designation");
 
         if (!employees.length) {
             return res.status(404).json({ message: "No employees found" });

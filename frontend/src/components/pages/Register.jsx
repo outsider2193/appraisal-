@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Box, Button, Grid, TextField, Typography, MenuItem, Paper, Container } from "@mui/material";
 import API from "../../api/Axios";
 import { toast } from "react-toastify";
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 
 const roles = ["employee", "manager", "hr"];
@@ -87,48 +87,44 @@ const Register = () => {
                     >
                         Register
                     </Typography>
-
                     <form onSubmit={handleSubmit(onSubmit)} noValidate>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    label="First Name"
-                                    fullWidth
-                                    {...register("firstName", validations.nameValidation)}
-                                    error={!!errors.firstName}
-                                    helperText={errors.firstName?.message}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    label="Last Name"
-                                    fullWidth
-                                    {...register("lastName", validations.lastNameValidation)}
-                                    error={!!errors.lastName}
-                                    helperText={errors.lastName?.message}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Email"
-                                    type="email"
-                                    fullWidth
-                                    {...register("email", validations.emailValidation)}
-                                    error={!!errors.email}
-                                    helperText={errors.email?.message}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Password"
-                                    type="password"
-                                    fullWidth
-                                    {...register("password", validations.passwordValidation)}
-                                    error={!!errors.password}
-                                    helperText={errors.password?.message}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+                        <Box display="flex" gap={2} mb={2}>
+                            <TextField
+                                label="First Name"
+                                fullWidth
+                                {...register("firstName", validations.nameValidation)}
+                                error={!!errors.firstName}
+                                helperText={errors.firstName?.message}
+                            />
+                            <TextField
+                                label="Last Name"
+                                fullWidth
+                                {...register("lastName", validations.lastNameValidation)}
+                                error={!!errors.lastName}
+                                helperText={errors.lastName?.message}
+                            />
+                        </Box>
+
+                        <Box display="flex" flexDirection="column" gap={2}>
+                            <TextField
+                                label="Email"
+                                type="email"
+                                fullWidth
+                                {...register("email", validations.emailValidation)}
+                                error={!!errors.email}
+                                helperText={errors.email?.message}
+                            />
+
+                            <TextField
+                                label="Password"
+                                type="password"
+                                fullWidth
+                                {...register("password", validations.passwordValidation)}
+                                error={!!errors.password}
+                                helperText={errors.password?.message}
+                            />
+
+                            <Box display="flex" gap={2}>
                                 <TextField
                                     select
                                     label="Gender"
@@ -136,7 +132,6 @@ const Register = () => {
                                     {...register("gender", { required: "Gender is required" })}
                                     error={!!errors.gender}
                                     helperText={errors.gender?.message}
-                                    InputLabelProps={{ shrink: true }}
                                     defaultValue=""
                                 >
                                     {genders.map((gender) => (
@@ -145,8 +140,7 @@ const Register = () => {
                                         </MenuItem>
                                     ))}
                                 </TextField>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+
                                 <TextField
                                     label="Contact Number"
                                     fullWidth
@@ -154,8 +148,9 @@ const Register = () => {
                                     error={!!errors.contactNumber}
                                     helperText={errors.contactNumber?.message}
                                 />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+                            </Box>
+
+                            <Box display="flex" gap={2}>
                                 <TextField
                                     label="Department"
                                     fullWidth
@@ -163,8 +158,7 @@ const Register = () => {
                                     error={!!errors.department}
                                     helperText={errors.department?.message}
                                 />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+
                                 <TextField
                                     label="Designation"
                                     fullWidth
@@ -172,47 +166,44 @@ const Register = () => {
                                     error={!!errors.designation}
                                     helperText={errors.designation?.message}
                                 />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    select
-                                    label="Role"
-                                    fullWidth
-                                    {...register("role", { required: "Role is required" })}
-                                    error={!!errors.role}
-                                    helperText={errors.role?.message}
-                                    InputLabelProps={{ shrink: true }}
-                                    defaultValue=""
-                                >
-                                    {roles.map((role) => (
-                                        <MenuItem key={role} value={role}>
-                                            {role.charAt(0).toUpperCase() + role.slice(1)}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    type="submit"
-                                    size="large"
-                                    sx={{ mt: 2 }}
-                                >
-                                    Register
-                                </Button>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography align="center" sx={{ mt: 2 }}>
-                                    Already have an account?{" "}
-                                    <Link to="/login" style={{ textDecoration: "none", color: "#1976d2" }}>
-                                        Login here
-                                    </Link>
-                                </Typography>
-                            </Grid>
-                        </Grid>
+                            </Box>
+
+                            <TextField
+                                select
+                                label="Role"
+                                fullWidth
+                                {...register("role", { required: "Role is required" })}
+                                error={!!errors.role}
+                                helperText={errors.role?.message}
+                                defaultValue=""
+                            >
+                                {roles.map((role) => (
+                                    <MenuItem key={role} value={role}>
+                                        {role.charAt(0).toUpperCase() + role.slice(1)}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                type="submit"
+                                size="large"
+                                sx={{ mt: 1 }}
+                            >
+                                Register
+                            </Button>
+
+                            <Typography align="center" sx={{ mt: 2 }}>
+                                Already have an account?{" "}
+                                <Link to="/login" style={{ textDecoration: "none", color: "#1976d2" }}>
+                                    Login here
+                                </Link>
+                            </Typography>
+                        </Box>
                     </form>
+
                 </Paper>
             </Box>
         </Container>

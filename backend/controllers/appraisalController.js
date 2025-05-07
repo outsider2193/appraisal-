@@ -516,7 +516,7 @@ const filterAppraisals = async (req, res) => {
             .populate('hrReview');
 
         if (appraisals.length === 0) {
-            return res.status(404).json({ message: "No appraisals found for the specified filters." });
+            return res.status(200).json({ count: 0, appraisals: [] }); // ✅ Return 200 instead of 404
         }
 
         res.status(200).json({ count: appraisals.length, appraisals });

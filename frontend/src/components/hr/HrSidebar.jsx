@@ -35,8 +35,8 @@ const HrSidebar = ({ setActiveView }) => {
                 '& .MuiDrawer-paper': {
                     width: 240,
                     boxSizing: 'border-box',
-                    bgcolor: '#003366',
-                    color: '#fff',
+                    bgcolor: '#1e1e2f',
+                    color: '#ffffff',
                 },
             }}
         >

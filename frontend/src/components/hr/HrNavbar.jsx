@@ -10,7 +10,7 @@ import {
 import { jwtDecode } from "jwt-decode";
 
 const HrNavbar = () => {
-    const token = localStorage.getItem("hr");
+    const token = localStorage.getItem("token");
     let firstName = "";
 
     if (token) {
@@ -32,7 +32,7 @@ const HrNavbar = () => {
             position="fixed"
             sx={{
                 zIndex: (theme) => theme.zIndex.drawer + 1,
-                backgroundColor: '#003366',
+                backgroundColor: '	#aab0d0',
                 width: `calc(100% - 240px)`,
                 ml: '240px',
             }}
@@ -40,16 +40,16 @@ const HrNavbar = () => {
 
 
             <Toolbar sx={{ justifyContent: "space-between" }}>
-                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                <Typography variant="h6" sx={{ fontWeight: "bold", color: "text.primary" }}>
                     HR Dashboard
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Avatar sx={{ bgcolor: "#fff", color: "#003366", fontWeight: "bold" }}>
+                    <Avatar sx={{ bgcolor: "secondary.main", color: "text.primary", fontWeight: "bold" }}>
                         {firstName?.charAt(0)?.toUpperCase()}
                     </Avatar>
                     <Button
-                        color="inherit"
-                        variant="outlined"
+                        color="error"
+                        variant="contained"
                         sx={{ color: "#fff", borderColor: "#fff" }}
                         onClick={handleLogout}
                     >

@@ -221,7 +221,7 @@ const HRReviewForm = () => {
                       </Grid>
 
                       <Grid item xs={12} md={6}>
-                        <Paper elevation={1} sx={{ p: 2, bgcolor: '#f5f5f5', height: '100%' }}>
+                        <Paper elevation={1} sx={{ p: 2, bgcolor: '#f5f5f5' }}>
                           <Typography variant="subtitle1" color="primary" gutterBottom>
                             <strong>Strengths</strong>
                           </Typography>
@@ -230,7 +230,7 @@ const HRReviewForm = () => {
                       </Grid>
 
                       <Grid item xs={12} md={6}>
-                        <Paper elevation={1} sx={{ p: 2, bgcolor: '#f5f5f5', height: '100%' }}>
+                        <Paper elevation={1} sx={{ p: 2, bgcolor: '#f5f5f5'}}>
                           <Typography variant="subtitle1" color="primary" gutterBottom>
                             <strong>Areas of Improvement</strong>
                           </Typography>
@@ -239,7 +239,7 @@ const HRReviewForm = () => {
                       </Grid>
 
                       <Grid item xs={12} md={6}>
-                        <Paper elevation={1} sx={{ p: 2, bgcolor: '#f5f5f5', height: '100%' }}>
+                        <Paper elevation={1} sx={{ p: 2, bgcolor: '#f5f5f5'}}>
                           <Typography variant="subtitle1" color="primary" gutterBottom>
                             <strong>Training Recommendations</strong>
                           </Typography>
@@ -248,7 +248,7 @@ const HRReviewForm = () => {
                       </Grid>
 
                       <Grid item xs={12} md={6}>
-                        <Paper elevation={1} sx={{ p: 2, bgcolor: '#f5f5f5', height: '100%' }}>
+                        <Paper elevation={1} sx={{ p: 2, bgcolor: '#f5f5f5' }}>
                           <Typography variant="subtitle1" color="primary" gutterBottom>
                             <strong>Overall Rating</strong>
                           </Typography>

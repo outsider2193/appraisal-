@@ -17,7 +17,7 @@ const managerRoutes = require("./routes/managerRoutes");
 app.use("/auth", authRoutes);
 app.use("/hr", appraisalRoutes);
 app.use("/employee", employeeRoutes);
-app.use("/manager", managerRoutes)
+app.use("/manager", managerRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

@@ -13,11 +13,11 @@ router.post("/submitreview/:appraisalId", verifyToken, authorizedRoles("manager"
 router.get("/getappraisal", verifyToken, authorizedRoles("manager"), getManagerAppraisals);
 router.post("/assigngoal/:employeeId", verifyToken, authorizedRoles("manager"), assignGoal);
 router.get("/fetchgoals/:employeeId", verifyToken, authorizedRoles("manager"), getEmployeeGoals);
-router.get("/fetchtrainings/:employeeId", verifyToken, authorizedRoles("manager"), getEmployeeTrainings)
-router.post("/assigntraining/:employeeId", verifyToken, authorizedRoles("manager"), assignTraining)
+router.get("/fetchtrainings/:employeeId", verifyToken, authorizedRoles("manager"), getEmployeeTrainings);
+router.post("/assigntraining/:employeeId", verifyToken, authorizedRoles("manager"), assignTraining);
 router.post("/assignrecognition/:employeeId", verifyToken, authorizedRoles("manager"), giveRecognition);
-router.delete("/goals/:goalId", verifyToken, authorizedRoles("manager"), deleteGoal)
-router.delete("/trainings/:trainingId", verifyToken, authorizedRoles("manager"), deleteTraining)
+router.delete("/goals/:goalId", verifyToken, authorizedRoles("manager"), deleteGoal);
+router.delete("/trainings/:trainingId", verifyToken, authorizedRoles("manager"), deleteTraining);
 
 // router.get("/employees", verifyToken, authorizedRoles("manager"), getEmployeesUnderManager)
 

@@ -141,31 +141,33 @@ const getManagerAppraisals = async (req, res) => {
             .populate("selfReview")
             .populate("managerReview");
 
-        // Add a flag to indicate if review needs update
-        const processedAppraisals = appraisals.map(appraisal => {
-            // Create a new object with all the appraisal data
+        const processedAppraisals = await Promise.all(appraisals.map(async (appraisal) => {
             const processedAppraisal = appraisal.toObject();
 
-            // Check if self-review was updated after manager review
+            // Add review flag
             if (appraisal.selfReview && appraisal.managerReview) {
-                // Compare the last updated dates
                 const selfReviewUpdated = new Date(appraisal.selfReview.updatedAt || appraisal.selfReview.createdAt);
                 const managerReviewDate = new Date(appraisal.managerReview.submittedAt);
-
-                // Set a flag if self-review was updated after manager review
                 processedAppraisal.needsReview = selfReviewUpdated > managerReviewDate;
             }
 
+            // 🔽 Fetch related goals and trainings
+            const employeeId = appraisal.employee._id;
+            const employeeGoals = await Goal.find({ employee: employeeId }).lean();
+            const employeeTrainings = await Training.find({ employee: employeeId }).lean();
+
+            processedAppraisal.employeeGoals = employeeGoals;
+            processedAppraisal.employeeTrainings = employeeTrainings;
+
             return processedAppraisal;
-        });
+        }));
 
         res.status(200).json({ appraisals: processedAppraisals });
     } catch (err) {
-        console.error(err);
+        console.error("Error in getManagerAppraisals:", err);
         res.status(500).json({ message: "Server error" });
     }
 };
-
 
 const assignGoal = async (req, res) => {
     try {
@@ -227,8 +229,6 @@ const deleteGoal = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 };
-
-module.exports = { deleteGoal };
 
 
 const getEmployeeTrainings = async (req, res) => {

@@ -1,104 +1,73 @@
-import React, { useState } from 'react';
+import React from "react";
 import {
     Drawer,
     List,
     ListItem,
+    ListItemIcon,
     ListItemText,
-    Box,
-    Typography,
     Toolbar,
     CssBaseline,
-} from '@mui/material';
-
-import ManagerOverview from './ManagerOverview';
-import ReviewForm from './ReviewForm';
-import ManagerAppraisal from './ManagerAppraisal';
-import Goals from './Goals';
-import Training from './Training';
-
-
+    Box,
+} from "@mui/material";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import RateReviewIcon from "@mui/icons-material/RateReview";
+import FlagIcon from "@mui/icons-material/Flag";
+import SchoolIcon from "@mui/icons-material/School";
 
 const drawerWidth = 240;
 
-const ManagerSidebar = () => {
-    const [selectedComponent, setSelectedComponent] = useState('overview');
-
-    const renderComponent = () => {
-        switch (selectedComponent) {
-            case 'overview':
-                return <ManagerOverview />;
-
-            case 'review':
-                return <ReviewForm />;
-            case 'appraisals':
-                return <ManagerAppraisal />;
-            case 'Employee Goals':
-                return <Goals></Goals>
-            case 'Employee Training':
-                return <Training />
-            default:
-                return <ManagerOverview />;
-        }
-    };
+const ManagerSidebar = ({ setActiveView, activeView }) => {
+    const menuItems = [
+        { key: "overview", label: "Overview", icon: <DashboardIcon /> },
+        { key: "review", label: "Review Form", icon: <RateReviewIcon /> },
+        { key: "goals", label: "Employee Goals", icon: <FlagIcon /> },
+        { key: "training", label: "Employee Training", icon: <SchoolIcon /> },
+    ];
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <>
             <CssBaseline />
-
-            {/* Permanent Sidebar */}
             <Drawer
                 variant="permanent"
                 anchor="left"
                 sx={{
                     width: drawerWidth,
                     flexShrink: 0,
-                    '& .MuiDrawer-paper': {
+                    "& .MuiDrawer-paper": {
                         width: drawerWidth,
-                        boxSizing: 'border-box',
-                        backgroundColor: '#f9f9f9',
+                        boxSizing: "border-box",
+                        bgcolor: "#1e1e2f",
+                        color: "#ffffff",
                     },
                 }}
             >
                 <Toolbar />
-                <Box sx={{ overflow: 'auto' }}>
-                    <Typography variant="h6" align="center" mt={2} fontWeight="bold">
-                        Manager Panel
-                    </Typography>
-                    <List>
-                        <ListItem button onClick={() => setSelectedComponent('overview')}>
-                            <ListItemText primary="Overview" />
+                <List>
+                    {menuItems.map((item) => (
+                        <ListItem
+                            button
+                            key={item.key}
+                            onClick={() => setActiveView(item.key)}
+                            selected={activeView === item.key}
+                            sx={{
+                                "&.Mui-selected": {
+                                    bgcolor: "rgba(255, 255, 255, 0.1)",
+                                },
+                                "&:hover": {
+                                    bgcolor: "rgba(255, 255, 255, 0.08)",
+                                },
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: "white" }}>
+                                {item.icon}
+                            </ListItemIcon>
+                            <ListItemText primary={item.label} />
                         </ListItem>
-
-                        <ListItem button onClick={() => setSelectedComponent('review')}>
-                            <ListItemText primary="Review Form" />
-                        </ListItem>
-                        <ListItem button onClick={() => setSelectedComponent('appraisals')}>
-                            <ListItemText primary="Appraisals" />
-                        </ListItem>
-                        <ListItem button onClick={() => setSelectedComponent('Employee Goals')}>
-                            <ListItemText primary="Employee Goals" />
-                        </ListItem>
-                        <ListItem button onClick={() => setSelectedComponent('Employee Training')}>
-                            <ListItemText primary="Employee Training" />
-                        </ListItem>
-                    </List>
-                </Box>
+                    ))}
+                </List>
             </Drawer>
-
-            {/* Main Content */}
-            <Box
-                component="main"
-                sx={{
-                    flexGrow: 1,
-                    p: 3,
-                    ml: `${drawerWidth}px`,
-                }}
-            >
-                <Toolbar />
-                {renderComponent()}
-            </Box>
-        </Box>
+        </>
     );
 };
 
-export default ManagerSidebar
+export default ManagerSidebar;

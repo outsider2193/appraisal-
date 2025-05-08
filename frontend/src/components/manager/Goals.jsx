@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import API from '../../api/Axios';
 
-const ManagerGoals = () => {
+const Goals = () => {
   const [appraisals, setAppraisals] = useState([]);
   const [goalsData, setGoalsData] = useState({});
   const [openDialog, setOpenDialog] = useState(false);
@@ -297,4 +297,4 @@ const ManagerGoals = () => {
   );
 };
 
-export default ManagerGoals;
+export default Goals;

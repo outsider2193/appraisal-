@@ -38,6 +38,42 @@ const getManagerReviewForm = async (req, res) => {
     }
 };
 
+// const submitManagerReview = async (req, res) => {
+//     try {
+//         const { feedback, strengths, areasOfImprovement, trainingRecommendations, ratings, overallRating, comments } = req.body;
+//         const managerId = req.user.id;
+//         const { appraisalId } = req.params;
+
+//         const appraisal = await Appraisal.findById(appraisalId);
+//         if (!appraisal || appraisal.manager.toString() !== managerId) {
+//             return res.status(403).json({ message: "Not authorized or appraisal not found" });
+//         }
+
+//         const managerReview = new ManagerReview({
+//             appraisal: appraisalId,
+//             feedback,
+//             strengths,
+//             areasOfImprovement,
+//             trainingRecommendations,
+//             ratings,
+//             overallRating,
+//             comments,
+//             submittedAt: new Date()
+//         });
+
+//         const savedReview = await managerReview.save();
+
+//         appraisal.managerReview = savedReview._id;
+//         appraisal.status = "manager_review_completed";
+//         await appraisal.save();
+
+//         res.status(201).json({ message: "Manager review submitted", managerReview: savedReview });
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ message: "Server error" });
+//     }
+// };
+
 const submitManagerReview = async (req, res) => {
     try {
         const { feedback, strengths, areasOfImprovement, trainingRecommendations, ratings, overallRating, comments } = req.body;
@@ -49,44 +85,81 @@ const submitManagerReview = async (req, res) => {
             return res.status(403).json({ message: "Not authorized or appraisal not found" });
         }
 
-        const managerReview = new ManagerReview({
-            appraisal: appraisalId,
-            feedback,
-            strengths,
-            areasOfImprovement,
-            trainingRecommendations,
-            ratings,
-            overallRating,
-            comments,
-            submittedAt: new Date()
-        });
+        // Check if there's an existing review to update
+        if (appraisal.managerReview) {
+            // Update the existing review
+            const updatedReview = await ManagerReview.findByIdAndUpdate(
+                appraisal.managerReview,
+                {
+                    feedback,
+                    strengths,
+                    areasOfImprovement,
+                    trainingRecommendations,
+                    ratings,
+                    overallRating,
+                    comments,
+                    submittedAt: new Date() // Update submission date
+                },
+                { new: true }
+            );
 
-        const savedReview = await managerReview.save();
+            res.status(200).json({ message: "Manager review updated", managerReview: updatedReview });
+        } else {
+            // Create a new review
+            const managerReview = new ManagerReview({
+                appraisal: appraisalId,
+                feedback,
+                strengths,
+                areasOfImprovement,
+                trainingRecommendations,
+                ratings,
+                overallRating,
+                comments,
+                submittedAt: new Date()
+            });
 
-        appraisal.managerReview = savedReview._id;
-        appraisal.status = "manager_review_completed";
-        await appraisal.save();
+            const savedReview = await managerReview.save();
 
-        res.status(201).json({ message: "Manager review submitted", managerReview: savedReview });
+            appraisal.managerReview = savedReview._id;
+            appraisal.status = "manager_review_completed";
+            await appraisal.save();
+
+            res.status(201).json({ message: "Manager review submitted", managerReview: savedReview });
+        }
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
     }
 };
 
-
-
 const getManagerAppraisals = async (req, res) => {
     try {
         const managerId = req.user.id;
 
         const appraisals = await Appraisal.find({ manager: managerId })
-            .populate("employee", "firstname lastname email")
+            .populate("employee", "firstName lastName email")
             .populate("selfReview")
-            .populate("managerReview")
-          
+            .populate("managerReview");
 
-        res.status(200).json({ appraisals });
+        // Add a flag to indicate if review needs update
+        const processedAppraisals = appraisals.map(appraisal => {
+            // Create a new object with all the appraisal data
+            const processedAppraisal = appraisal.toObject();
+
+            // Check if self-review was updated after manager review
+            if (appraisal.selfReview && appraisal.managerReview) {
+                // Compare the last updated dates
+                const selfReviewUpdated = new Date(appraisal.selfReview.updatedAt || appraisal.selfReview.createdAt);
+                const managerReviewDate = new Date(appraisal.managerReview.submittedAt);
+
+                // Set a flag if self-review was updated after manager review
+                processedAppraisal.needsReview = selfReviewUpdated > managerReviewDate;
+            }
+
+            return processedAppraisal;
+        });
+
+        res.status(200).json({ appraisals: processedAppraisals });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });

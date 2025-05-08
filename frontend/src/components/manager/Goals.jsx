@@ -179,15 +179,26 @@ const ManagerGoals = () => {
                               }}
                             >
                               <Box>
-                                <Typography variant="subtitle2">{goal.title}</Typography>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>{goal.title}</Typography>
                                 <Typography variant="body2" color="text.secondary">
                                   {goal.description}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                  Target Date:{' '}
-                                  {new Date(goal.targetDate).toLocaleDateString()}
+                                  Target Date: {new Date(goal.targetDate).toLocaleDateString()}
                                 </Typography>
-                                <Chip label={goal.priority} size="small" sx={{ mt: 1 }} />
+                                <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+                                  <Chip label={goal.priority} size="small" />
+                                  <Chip
+                                    label={goal.status?.replace("_", " ") || "not_started"}
+                                    size="small"
+                                    color={
+                                      goal.status === "completed" ? "success" :
+                                        goal.status === "in_progress" ? "primary" :
+                                          goal.status === "deferred" ? "error" :
+                                            "default"
+                                    }
+                                  />
+                                </Box>
                               </Box>
                               <Button
                                 variant="outlined"

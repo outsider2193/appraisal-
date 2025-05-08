@@ -17,7 +17,10 @@ import {
     MenuItem,
     InputLabel,
     FormControl,
+    IconButton,
+    Tooltip,
 } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import API from '../../api/Axios';
 
 const Training = () => {
@@ -25,47 +28,56 @@ const Training = () => {
     const [trainingsData, setTrainingsData] = useState({});
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
     const [trainingForm, setTrainingForm] = useState({
         title: '',
         description: '',
-        type: 'online', // Default to 'online'
+        type: 'online',
         startDate: '',
         completionDate: '',
     });
 
-    useEffect(() => {
-        const fetchAppraisals = async () => {
-            try {
-                const response = await API.get('/manager/getappraisal');
-                setAppraisals(response.data.appraisals);
-            } catch (error) {
-                console.error('Error fetching appraisals:', error);
-            }
-        };
+    const fetchAppraisals = async () => {
+        try {
+            const response = await API.get('/manager/getappraisal');
+            setAppraisals(response.data.appraisals);
+            return response.data.appraisals;
+        } catch (error) {
+            console.error('Error fetching appraisals:', error);
+            return [];
+        }
+    };
 
+    useEffect(() => {
         fetchAppraisals();
     }, []);
 
-    useEffect(() => {
-        const fetchTrainings = async () => {
-            const newTrainingsData = {};
-            for (const appraisal of appraisals) {
-                const employeeId = appraisal.employee._id;
-                try {
-                    const response = await API.get(`/manager/fetchtrainings/${employeeId}`);
-                    newTrainingsData[employeeId] = response.data.trainings;
-                } catch (error) {
-                    console.error(`Error fetching trainings for employee ${employeeId}:`, error);
-                    newTrainingsData[employeeId] = [];
-                }
+    const fetchTrainings = async (employeeList = appraisals) => {
+        setRefreshing(true);
+        const newTrainingsData = {};
+        for (const appraisal of employeeList) {
+            const employeeId = appraisal.employee._id;
+            try {
+                const response = await API.get(`/manager/fetchtrainings/${employeeId}`);
+                newTrainingsData[employeeId] = response.data.trainings;
+            } catch (error) {
+                console.error(`Error fetching trainings for employee ${employeeId}:`, error);
+                newTrainingsData[employeeId] = [];
             }
-            setTrainingsData(newTrainingsData);
-        };
+        }
+        setTrainingsData(newTrainingsData);
+        setRefreshing(false);
+    };
 
+    useEffect(() => {
         if (appraisals.length > 0) {
-            fetchTrainings();
+            fetchTrainings(appraisals);
         }
     }, [appraisals]);
+
+    const handleRefresh = async () => {
+        await fetchTrainings();
+    };
 
     const handleOpenDialog = (employee) => {
         setSelectedEmployee(employee);
@@ -78,7 +90,7 @@ const Training = () => {
         setTrainingForm({
             title: '',
             description: '',
-            type: 'online', // Reset to 'online' when closing the dialog
+            type: 'online',
             startDate: '',
             completionDate: '',
         });
@@ -118,9 +130,16 @@ const Training = () => {
 
     return (
         <Box sx={{ padding: 4 }}>
-            <Typography variant="h4" gutterBottom>
-                Employee Trainings
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h4">
+                    Employee Trainings
+                </Typography>
+                <Tooltip title="Refresh training data">
+                    <IconButton onClick={handleRefresh} disabled={refreshing}>
+                        <RefreshIcon />
+                    </IconButton>
+                </Tooltip>
+            </Box>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
                 {uniqueAppraisals.map((appraisal) => {
                     const employee = appraisal.employee;
@@ -167,7 +186,13 @@ const Training = () => {
                                                             <Typography variant="body2" color="text.secondary">
                                                                 From: {new Date(training.startDate).toLocaleDateString()} - To: {new Date(training.completionDate).toLocaleDateString()}
                                                             </Typography>
-                                                            <Chip label={training.status} size="small" sx={{ mt: 1 }} />
+                                                            <Chip 
+                                                                label={training.status} 
+                                                                size="small" 
+                                                                sx={{ mt: 1 }}
+                                                                color={training.status === 'completed' ? 'success' : 
+                                                                       training.status === 'in_progress' ? 'primary' : 'default'}
+                                                            />
                                                         </Box>
                                                         <Button
                                                             variant="outlined"
@@ -191,7 +216,6 @@ const Training = () => {
                                     <Button
                                         size="small"
                                         onClick={() => handleOpenDialog(employee)}
-                                        disabled={hasTraining}
                                     >
                                         Assign Training
                                     </Button>
@@ -267,4 +291,3 @@ const Training = () => {
 };
 
 export default Training;
-

@@ -67,7 +67,7 @@ const getEmployeeGoals = async (req, res) => {
     try {
         const employeeId = req.user.id;
 
-        const goals = await Goal.find({ employee: employeeId });
+        const goals = await Goal.find({ employee: employeeId }).populate("employee", "firstName lastName email").exec();
         if (!goals.length) {
             return res.status(400).json({ message: "No goal assigned" })
         }
@@ -77,42 +77,6 @@ const getEmployeeGoals = async (req, res) => {
         res.status(500).json({ message: "Server error while fetching goals" });
     }
 };
-
-
-
-const getEmployeeTrainings = async (req, res) => {
-    try {
-        const employeeId = req.user.id;
-
-        const trainings = await Training.find({ employee: employeeId });
-        if (!trainings.length) {
-            return res.status(400).json({ message: "No training assigned" })
-        }
-        res.status(200).json({ trainings });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Server error while fetching trainings" });
-    }
-};
-
-
-
-const getEmployeeRecognitions = async (req, res) => {
-    try {
-        const employeeId = req.user.id;
-
-        const recognitions = await Recognition.find({ employee: employeeId });
-
-        if (!recognitions) {
-            return res.status(400).json({ message: "No recognitions available" })
-        }
-        res.status(200).json({ recognitions });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Server error while fetching recognitions" });
-    }
-};
-
 
 
 const updateGoalProgressByEmployee = async (req, res) => {
@@ -150,6 +114,20 @@ const updateGoalProgressByEmployee = async (req, res) => {
     }
 };
 
+const getEmployeeTrainings = async (req, res) => {
+    try {
+        const employeeId = req.user.id;
+
+        const trainings = await Training.find({ employee: employeeId });
+        if (!trainings.length) {
+            return res.status(400).json({ message: "No training assigned" })
+        }
+        res.status(200).json({ trainings });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error while fetching trainings" });
+    }
+};
 
 
 const updateTrainingByEmployee = async (req, res) => {
@@ -176,6 +154,22 @@ const updateTrainingByEmployee = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error while updating training" });
+    }
+};
+
+const getEmployeeRecognitions = async (req, res) => {
+    try {
+        const employeeId = req.user.id;
+
+        const recognitions = await Recognition.find({ employee: employeeId });
+
+        if (!recognitions) {
+            return res.status(400).json({ message: "No recognitions available" })
+        }
+        res.status(200).json({ recognitions });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error while fetching recognitions" });
     }
 };
 
@@ -212,5 +206,5 @@ const getEmployeeCompletedAppraisals = async (req, res) => {
 
 module.exports = {
     getEmployeePendingAppraisals, submitSelfReview, getEmployeeGoals, getEmployeeTrainings, getEmployeeRecognitions,
-    updateGoalProgressByEmployee, updateTrainingByEmployee,getEmployeeCompletedAppraisals
+    updateGoalProgressByEmployee, updateTrainingByEmployee, getEmployeeCompletedAppraisals
 }

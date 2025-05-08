@@ -115,6 +115,13 @@ const LoginPage = () => {
                         sx={{ mb: 2 }}
                     />
 
+                    {/* 🔗 Forgot Password Link */}
+                    <Typography variant="body2" sx={{ textAlign: "right", mb: 2 }}>
+                        <Link to="/forgot-password" style={{ textDecoration: "none", color: "#1976d2" }}>
+                            Forgot Password?
+                        </Link>
+                    </Typography>
+
                     <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
                         {loading ? "Logging in..." : "Login"}
                     </Button>

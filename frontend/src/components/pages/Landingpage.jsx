@@ -1,8 +1,8 @@
 import React from 'react';
-import { Box, Typography, Button, Container, Grid, Paper, Card, CardContent, Icon } from '@mui/material';
+import { Box, Typography, Button, Container, Grid, Card, CardContent, Icon } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
-import { AccessAlarm, TrackChanges, People, VerifiedUser, Feedback, EmojiEvents } from '@mui/icons-material';
+import { AccessAlarm, TrackChanges, People, VerifiedUser, Feedback, EmojiEvents, SelfImprovement, SupervisorAccount, Approval, CheckCircle, Update, StarBorder } from '@mui/icons-material';
 import backgroundImage from "../../assets/images/BGWelcome.jpg";
 
 const Landingpage = () => {
@@ -52,10 +52,10 @@ const Landingpage = () => {
             Goal Setting
           </Typography>
           <Grid container spacing={4}>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={3}>
               <Card elevation={3} sx={{ backgroundColor: '#d3e3fc' }}>
                 <CardContent>
-                  <Icon sx={{ fontSize: 40, color: '#1976d2' }}>access_alarm</Icon>
+                  <Icon sx={{ fontSize: 40, color: '#1976d2' }}><AccessAlarm /></Icon>
                   <Typography variant="h6" gutterBottom>
                     Set Smart Goals
                   </Typography>
@@ -65,10 +65,10 @@ const Landingpage = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={3}>
               <Card elevation={3} sx={{ backgroundColor: '#f7d9c2' }}>
                 <CardContent>
-                  <Icon sx={{ fontSize: 40, color: '#f57c00' }}>track_changes</Icon>
+                  <Icon sx={{ fontSize: 40, color: '#f57c00' }}><TrackChanges /></Icon>
                   <Typography variant="h6" gutterBottom>
                     Track Progress
                   </Typography>
@@ -78,10 +78,10 @@ const Landingpage = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={3}>
               <Card elevation={3} sx={{ backgroundColor: '#a5d6a7' }}>
                 <CardContent>
-                  <Icon sx={{ fontSize: 40, color: '#388e3c' }}>people</Icon>
+                  <Icon sx={{ fontSize: 40, color: '#388e3c' }}><People /></Icon>
                   <Typography variant="h6" gutterBottom>
                     Collaborative Objectives
                   </Typography>
@@ -91,10 +91,10 @@ const Landingpage = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={3}>
               <Card elevation={3} sx={{ backgroundColor: '#ffccbc' }}>
                 <CardContent>
-                  <Icon sx={{ fontSize: 40, color: '#f44336' }}>verified_user</Icon>
+                  <Icon sx={{ fontSize: 40, color: '#f44336' }}><VerifiedUser /></Icon>
                   <Typography variant="h6" gutterBottom>
                     Verified Achievements
                   </Typography>
@@ -115,10 +115,10 @@ const Landingpage = () => {
             Multi-Level Review
           </Typography>
           <Grid container spacing={4}>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={3}>
               <Card elevation={3} sx={{ backgroundColor: '#e3f2fd' }}>
                 <CardContent>
-                  <Icon sx={{ fontSize: 40, color: '#1e88e5' }}>self_improvement</Icon>
+                  <Icon sx={{ fontSize: 40, color: '#1e88e5' }}><SelfImprovement /></Icon>
                   <Typography variant="h6" gutterBottom>
                     Self Evaluation
                   </Typography>
@@ -128,10 +128,10 @@ const Landingpage = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={3}>
               <Card elevation={3} sx={{ backgroundColor: '#ffe0b2' }}>
                 <CardContent>
-                  <Icon sx={{ fontSize: 40, color: '#ff5722' }}>supervisor_account</Icon>
+                  <Icon sx={{ fontSize: 40, color: '#ff5722' }}><SupervisorAccount /></Icon>
                   <Typography variant="h6" gutterBottom>
                     Supervisor Review
                   </Typography>
@@ -141,10 +141,10 @@ const Landingpage = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={3}>
               <Card elevation={3} sx={{ backgroundColor: '#c8e6c9' }}>
                 <CardContent>
-                  <Icon sx={{ fontSize: 40, color: '#388e3c' }}>approval</Icon>
+                  <Icon sx={{ fontSize: 40, color: '#388e3c' }}><Approval /></Icon>
                   <Typography variant="h6" gutterBottom>
                     Final Approval
                   </Typography>
@@ -154,10 +154,10 @@ const Landingpage = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={3}>
               <Card elevation={3} sx={{ backgroundColor: '#d1c4e9' }}>
                 <CardContent>
-                  <Icon sx={{ fontSize: 40, color: '#673ab7' }}>check_circle</Icon>
+                  <Icon sx={{ fontSize: 40, color: '#673ab7' }}><CheckCircle /></Icon>
                   <Typography variant="h6" gutterBottom>
                     Approval Workflow
                   </Typography>
@@ -178,10 +178,10 @@ const Landingpage = () => {
             Progress & Feedback
           </Typography>
           <Grid container spacing={4}>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={3}>
               <Card elevation={3} sx={{ backgroundColor: '#c8e6c9' }}>
                 <CardContent>
-                  <Icon sx={{ fontSize: 40, color: '#388e3c' }}>update</Icon>
+                  <Icon sx={{ fontSize: 40, color: '#388e3c' }}><Update /></Icon>
                   <Typography variant="h6" gutterBottom>
                     Real-Time Updates
                   </Typography>
@@ -191,10 +191,10 @@ const Landingpage = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={3}>
               <Card elevation={3} sx={{ backgroundColor: '#e1bee7' }}>
                 <CardContent>
-                  <Icon sx={{ fontSize: 40, color: '#9c27b0' }}>feedback</Icon>
+                  <Icon sx={{ fontSize: 40, color: '#9c27b0' }}><Feedback /></Icon>
                   <Typography variant="h6" gutterBottom>
                     360° Feedback
                   </Typography>
@@ -204,10 +204,10 @@ const Landingpage = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={3}>
               <Card elevation={3} sx={{ backgroundColor: '#ffccbc' }}>
                 <CardContent>
-                  <Icon sx={{ fontSize: 40, color: '#ff5722' }}>emoji_events</Icon>
+                  <Icon sx={{ fontSize: 40, color: '#ff5722' }}><EmojiEvents /></Icon>
                   <Typography variant="h6" gutterBottom>
                     Recognize Achievements
                   </Typography>
@@ -217,10 +217,10 @@ const Landingpage = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            <Grid item xs={12} md={3}>
               <Card elevation={3} sx={{ backgroundColor: '#f7d9c2' }}>
                 <CardContent>
-                  <Icon sx={{ fontSize: 40, color: '#f57c00' }}>star_border</Icon>
+                  <Icon sx={{ fontSize: 40, color: '#f57c00' }}><StarBorder /></Icon>
                   <Typography variant="h6" gutterBottom>
                     Performance Ratings
                   </Typography>
